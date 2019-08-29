@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+        <style>
+            #chartdiv {
+              width: 100%;
+              height: 500px;
+            }
+        </style>
+
+        <script src="https://www.amcharts.com/lib/4/core.js"></script>
+        <script src="https://www.amcharts.com/lib/4/charts.js"></script>
+        <script src="https://www.amcharts.com/lib/4/themes/material.js"></script>
+    </head>
+
+    <body>
+        <div class="description-block" style="padding-right: 2em; height: 100%">
+            <h3 class="col-md-offset-1" style="padding-right: 1em; text-align: center">Primary source content</h3>
+
+            <select id="select" onchange="selectView(this.options[this.selectedIndex].value);">
+                <option value="stack">Page quantity</option>
+                <option value="spread">Foliotation</option>
+            </select>
+            <div id="chartdiv"></div>
+        </div>
+    </body>
+
+    <script>
+        am4core.useTheme(am4themes_material);
+
+        var colorAstroObject = {
+                1: 'rgb(255,195,0)', // Sun
+                2: 'rgb(220,229,74)', // Mercury
+                3: 'rgb(42,123,155)', // Venus
+                4: 'rgb(22,191,180)', // Moon
+                5: 'rgb(199,0,41)', // Mars
+                6: 'rgb(255,87,51)', // Jupiter
+                7: 'rgb(173,212,92)', // Saturn
+                8: 'rgb(170,22,93)', // Spherical astronomical
+                9: 'rgb(105,23,102)', // Eighth sphere
+                10: 'rgb(37,73,165)', // Eclipse
+                11: 'rgb(87,199,133)', // Trigonometrical
+                };
+
+        var chart = am4core.create("chartdiv", am4charts.XYChart);
+        // chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
+
+        var spreadOutSet = [
+            {
+              "work": "Work 1",
+              "workUrl": "/work1",
+              "origItem": "Original item 1",
+              "from": 79,
+              "1": 83,
+              "url": "/1",
+              "color": am4core.color(colorAstroObject[1])
+            },
+            {
+              "work": "Work 1",
+              "workUrl": "/work1",
+              "origItem": "Original item 2",
+              "from": 81,
+              "2": 84,
+              "url": "/2",
+              "color": am4core.color(colorAstroObject[2])
+            },
+            {
+              "work": "Work 1",
+              "workUrl": "/work1",
+              "origItem": "Original item 3",
+              "from": 80,
+              "3": 82,
+              "url": "/3",
+              "color": am4core.color(colorAstroObject[3])
+            },
+
+            {
+              "work": "Work 2",
+              "workUrl": "/work2",
+              "origItem": "Original item 4",
+              "from": 25,
+              "4": 28,
+              "url": "/4",
+              "color": am4core.color(colorAstroObject[4])
+            },
+            {
+              "work": "Work 2",
+              "workUrl": "/work2",
+              "origItem": "Original item 5",
+              "from": 19,
+              "5": 27,
+              "url": "/5",
+              "color": am4core.color(colorAstroObject[5])
+            },
+
+            {
+              "work": "Work 3",
+              "workUrl": "/work3",
+              "origItem": "Original item 6",
+              "from": 12,
+              "6": 16,
+              "url": "/6",
+              "color": am4core.color(colorAstroObject[6])
+            },
+            {
+              "work": "Work 4",
+              "workUrl": "/work4",
+              "origItem": "Original item 7",
+              "from": 70,
+              "7": 76,
+              "url": "/7",
+              "color": am4core.color(colorAstroObject[7])
+            },
+
+            {
+              "work": "Work 4",
+              "workUrl": "/work4",
+              "origItem": "Original item 8",
+              "from": 75,
+              "8": 78,
+              "url": "/8",
+              "color": am4core.color(colorAstroObject[8])
+            },
+            {
+              "work": "Work 4",
+              "workUrl": "/work4",
+              "origItem": "Original item 9",
+              "from": 77,
+              "9": 81,
+              "url": "/9",
+              "color": am4core.color(colorAstroObject[9])
+            },
+
+            {
+              "work": "Work 4",
+              "workUrl": "/work4",
+              "origItem": "Original item 10",
+              "from": 77,
+              "10": 80,
+              "url": "/10",
+              "color": am4core.color(colorAstroObject[10])
+            }
+        ];
+
+        var i = 1;
+        function stackedDataset(dataset) {
+            const stackedSet = JSON.parse(JSON.stringify(dataset));
+            let from = 0;
+            let range;
+            works = {};
+            for (item of stackedSet) {
+                if (! works.hasOwnProperty(item.work))
+                    works[item.work] = 0;
+                range = item[i] - item.from + 1;
+                item.from = works[item.work];
+                item[i] = works[item.work] + range;
+                works[item.work] += range;
+                item.color = am4core.color(`rgb(${item.color._value["r"]},${item.color._value["g"]},${item.color._value["b"]})`);
+                i ++;
+            }
+            return stackedSet;
+        }
+
+        var stackedSet = stackedDataset(spreadOutSet);
+
+        var categoryAxis = chart.yAxes.push(new am4charts.CategoryAxis());
+        categoryAxis.dataFields.category = "work";
+        categoryAxis.renderer.inversed = true;
+        categoryAxis.renderer.grid.template.location = 0;
+        categoryAxis.renderer.labels.template.propertyFields.url = "workUrl";
+
+        var valueAxis = chart.xAxes.push(new am4charts.ValueAxis());
+
+        // chart.scrollbarX = new am4core.Scrollbar();
+        var cursor = new am4charts.XYCursor();
+        cursor.behavior = "panX";
+        chart.cursor = cursor;
+        cursor.lineX.disabled = true;
+        cursor.lineY.disabled = true;
+
+        function createSeries(field) {
+            var series = chart.series.push(new am4charts.ColumnSeries());
+            series.dataFields.categoryY = "work";
+            series.columns.template.propertyFields.fill = "color";
+            series.stroke = am4core.color("rgb(255,255,255)");
+            // series.strokeWidth = 3;
+            series.columns.template.propertyFields.tooltipText = "origItem";
+            series.columns.template.propertyFields.url = "url";
+
+            series.dataFields.openValueX = "from";
+            series.dataFields.valueX = field;
+            
+            valueAxis.title.text = "Number of folios";
+            series.stacked = true;
+
+            return series;
+        }
+
+        chart.data = stackedSet;
+
+    function containsObject(obj, list) {
+        var i;
+        for (i = 0; i < list.length; i++) {
+            if (list[i] === obj) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    let worksList = [];
+    i = 1;
+    let clusteredDataset = {};
+    for (item of spreadOutSet) {
+        if (containsObject(item.work, worksList)) {
+            let pages = {"from" : item.from, to : item[i], "OIid" : i};
+            clusteredDataset[item.work].push(pages);
+        } else {
+            worksList.push(item.work);
+            clusteredDataset[item.work] = [];
+            let pages = {"from" : item.from, to : item[i], "OIid" : i};
+            clusteredDataset[item.work].push(pages);
+        }
+        i += 1;
+    }
+
+    // clusteredDataSet = {"work1" : 
+    //                          [{"from" : 4, "to" : 6, "OIid" : 2},
+    //                           {"from" : 1, "to" : 3, "OIid" : 1}]}
+
+    for (work of Object.keys(clusteredDataset)){
+        pages = clusteredDataset[work];
+        var orderedPages = pages.slice(0);
+        orderedPages.sort(function(a,b) {
+            return a.from - b.from;
+        });
+        clusteredDataset[work] = orderedPages;
+    }
+    
+    // clusteredDataSet = {"work1" : 
+    //                          [{"from" : 1, "to" : 3, "OIid" : 1},
+    //                           {"from" : 4, "to" : 6, "OIid" : 2}]}
+
+    var ids = [];
+            var series = {};
+            var worksBounds = {};
+            // clustering page bounds of a set of original items on the same pages
+            for (work of Object.keys(clusteredDataset)){
+                pages = clusteredDataset[work];
+                // pages = [{"from" : 1, "to" : 3, "OIid" : 1},
+                //          {"from" : 4, "to" : 6, "OIid" : 2}]
+
+                var j = 0;
+                var bounds = {};
+                function instanciateBorne(bounds, j, i){
+                    bounds[j] = {};
+                    bounds[j].bound = [pages[i].from, pages[i].to];
+                    bounds[j].origItems = [];
+                    bounds[j].origItems.push(pages[i].OIid);
+                }
+
+
+                for (i = 0 ; i < pages.length ; i++) {
+                    if ($.isEmptyObject(bounds)) {
+                        instanciateBorne(bounds, j, i);
+                    } else { // if the the pageMin ("from") of an original item is contained inside an already existing bound
+                        if (pages[i].from >= bounds[j].bound[0] && pages[i].from < bounds[j].bound[1]){
+                            var OImin = pages[i].from;
+                            var OImax = pages[i].to;
+                            var workMin = bounds[j].bound[0];
+                            var workMax = bounds[j].bound[1];
+
+                            var min = Math.min(OImin, workMin);
+                            var max = Math.max(OImax, workMax);
+
+                            bounds[j].bound = [min, max];
+                            bounds[j].origItems.push(pages[i].OIid);
+                        } else {
+                            j++;
+                            instanciateBorne(bounds, j, i);
+                        }
+                    }
+                }
+
+                worksBounds[work] = bounds;
+                // For each work :
+                // bounds = [{bound : [min, max], origItems : [id1, id2]},
+                //           {bound : [min, max], origItems : [id3]}]
+
+                for (key of Object.keys(bounds)){
+                    i = 0;
+                    var bound = bounds[key];
+                    for (var id of bound.origItems) {
+                        ids.push(id);
+
+                        // creating a serie for each original item
+                        series[id] = createSeries(id);
+                    }
+                }
+            }
+
+            // configuring which dataset and how series are displayed when the user chooses a visualisation
+            function selectView(select) {
+                if (select === "spread") {
+                    chart.data = spreadOutSet;
+                    valueAxis.title.text = "[font-size:18px]Layout of {{ pages }} in the primary source[/]\n[font-size:12px](Multiple original items might be localised on the same {{ pages }} of the primary source)[/]";
+
+                    var numberOfWorks = Object.keys(worksBounds).length;
+                    var heightWork = 292/numberOfWorks;
+                    var heightBar = 225/numberOfWorks;
+
+                    for (var work of Object.keys(worksBounds)){
+                        bounds = worksBounds[work];
+                        for (key of Object.keys(bounds)){
+                            i = 0;
+                            var bound = bounds[key];
+                            var numberOfOrigItems = bound.origItems.length;
+                            for (var id of bound.origItems) {
+                                var heightItem = heightWork/numberOfOrigItems;
+                                // setting the height of the cell
+                                series[id].columns.template.height = heightItem;
+                                // configuring the displacement of the cell comparing to the center
+                                if (heightItem !== heightWork){
+                                    series[id].columns.template.dy = -(heightBar/2) + (heightItem * i);
+                                }
+                                i ++;
+                            }
+                        }
+                    }
+                } else if (select === "stack") {
+                    chart.data = stackedSet;
+                    valueAxis.title.text = "[font-size:18px]Cumulated number of {{ pages }} per work[/]\n[font-size:12px](Multiple original items might be localised on the same {{ pages }} of the primary source)[/]";
+                    for (id of ids){
+                        series[id].columns.template.dy = 0;
+                        series[id].columns.template.height = am4core.percent(80);
+                    }
+                }
+            }
+
+
+        </script>
+
+    </html>

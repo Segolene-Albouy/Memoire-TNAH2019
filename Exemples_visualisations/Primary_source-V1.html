@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+        <style>
+            #chartdiv {
+              width: 100%;
+              height: 500px;
+            }
+        </style>
+
+        <script src="https://www.amcharts.com/lib/4/core.js"></script>
+        <script src="https://www.amcharts.com/lib/4/charts.js"></script>
+        <script src="https://www.amcharts.com/lib/4/themes/material.js"></script>
+    </head>
+
+    <body>
+        <div class="description-block" style="padding-right: 2em; height: 100%">
+            <h3 class="col-md-offset-1" style="padding-right: 1em; text-align: center">Primary source content</h3>
+
+            <select id="select" onchange="selectView(this.options[this.selectedIndex].value);">
+                <option value="stack">Page quantity</option>
+                <option value="spread">Foliotation</option>
+            </select>
+            <div id="chartdiv"></div>
+        </div>
+    </body>
+
+    <script>
+        am4core.useTheme(am4themes_material);
+
+        var colorAstroObject = {
+                1: 'rgb(255,195,0)', // Sun
+                2: 'rgb(220,229,74)', // Mercury
+                3: 'rgb(42,123,155)', // Venus
+                4: 'rgb(22,191,180)', // Moon
+                5: 'rgb(199,0,41)', // Mars
+                6: 'rgb(255,87,51)', // Jupiter
+                7: 'rgb(173,212,92)', // Saturn
+                8: 'rgb(170,22,93)', // Spherical astronomical
+                9: 'rgb(105,23,102)', // Eighth sphere
+                10: 'rgb(37,73,165)', // Eclipse
+                11: 'rgb(87,199,133)', // Trigonometrical
+                };
+
+        var chart = am4core.create("chartdiv", am4charts.XYChart);
+        // chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
+
+        var spreadOutSet = [
+            {
+              "work": "Work 1",
+              "workUrl": "/work1",
+              "origItem": "Original item 1",
+              "from": 78,
+              "to": 79,
+              "url": "/1",
+              "color": am4core.color(colorAstroObject[1])
+            },
+            {
+              "work": "Work 1",
+              "workUrl": "/work1",
+              "origItem": "Original item 2",
+              "from": 81,
+              "to": 84,
+              "url": "/2",
+              "color": am4core.color(colorAstroObject[2])
+            },
+            {
+              "work": "Work 1",
+              "workUrl": "/work1",
+              "origItem": "Original item 3",
+              "from": 30,
+              "to": 39,
+              "url": "/3",
+              "color": am4core.color(colorAstroObject[3])
+            },
+
+            {
+              "work": "Work 2",
+              "workUrl": "/work2",
+              "origItem": "Original item 4",
+              "from": 27,
+              "to": 28,
+              "url": "/4",
+              "color": am4core.color(colorAstroObject[4])
+            },
+            {
+              "work": "Work 2",
+              "workUrl": "/work2",
+              "origItem": "Original item 5",
+              "from": 19,
+              "to": 26,
+              "url": "/5",
+              "color": am4core.color(colorAstroObject[5])
+            },
+
+            {
+              "work": "Work 3",
+              "workUrl": "/work3",
+              "origItem": "Original item 6",
+              "from": 12,
+              "to": 16,
+              "url": "/6",
+              "color": am4core.color(colorAstroObject[6])
+            },
+            {
+              "work": "Work 3",
+              "workUrl": "/work3",
+              "origItem": "Original item 7",
+              "from": 70,
+              "to": 71,
+              "url": "/7",
+              "color": am4core.color(colorAstroObject[7])
+            },
+
+            {
+              "work": "Work 4",
+              "workUrl": "/work4",
+              "origItem": "Original item 8",
+              "from": 75,
+              "to": 78,
+              "url": "/8",
+              "color": am4core.color(colorAstroObject[8])
+            },
+            {
+              "work": "Work 4",
+              "workUrl": "/work4",
+              "origItem": "Original item 9",
+              "from": 1,
+              "to": 70,
+              "url": "/9",
+              "color": am4core.color(colorAstroObject[9])
+            },
+
+            {
+              "work": "Work 5",
+              "workUrl": "/work5",
+              "origItem": "Original item 10",
+              "from": 30,
+              "to": 33,
+              "url": "/10",
+              "color": am4core.color(colorAstroObject[10])
+            }
+        ];
+
+        function stackedDataset(dataset) {
+            const stackedSet = JSON.parse(JSON.stringify(dataset));
+            let from = 0;
+            let to, range;
+            works = {};
+            for (item of stackedSet) {
+                if (! works.hasOwnProperty(item.work))
+                    works[item.work] = 0;
+                range = item.to - item.from + 1;
+                item.from = works[item.work];
+                item.to = works[item.work] + range;
+                works[item.work] += range;
+                item.color = am4core.color(`rgb(${item.color._value["r"]},${item.color._value["g"]},${item.color._value["b"]})`);
+            }
+            return stackedSet;
+        }
+
+        var stackedSet = stackedDataset(spreadOutSet);
+
+        var categoryAxis = chart.yAxes.push(new am4charts.CategoryAxis());
+        categoryAxis.dataFields.category = "work";
+        categoryAxis.renderer.inversed = true;
+        categoryAxis.renderer.grid.template.location = 0;
+        categoryAxis.renderer.labels.template.propertyFields.url = "workUrl";
+
+        var valueAxis = chart.xAxes.push(new am4charts.ValueAxis());
+
+        chart.scrollbarX = new am4core.Scrollbar();
+
+        function createSeries(field) {
+            var series = chart.series.push(new am4charts.ColumnSeries());
+            series.dataFields.categoryY = "work";
+            series.columns.template.propertyFields.fill = "color";
+            series.stroke = am4core.color("rgb(255,255,255)");
+            series.strokeWidth = 3;
+            series.columns.template.propertyFields.tooltipText = "origItem";
+            series.columns.template.propertyFields.url = "url";
+
+            series.dataFields.openValueX = "from";
+            series.dataFields.valueX = "to";
+            
+            valueAxis.title.text = "Number of folios";
+            series.stacked = true;
+
+            return series;
+        }
+
+        chart.data = stackedSet;
+        var series = createSeries("origItem");
+        
+        function selectView(select) {
+          if (select === "spread") {
+              chart.data = spreadOutSet;
+              valueAxis.title.text = "Composition of the primary source";
+          } else if (select === "stack") {
+              chart.data = stackedSet;
+              valueAxis.title.text = "Number of folios";
+          }
+        }
+
+        </script>
+
+    </html>

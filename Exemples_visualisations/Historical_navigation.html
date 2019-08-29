@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+        <script src="https://www.amcharts.com/lib/4/core.js"></script>
+        <script src="https://www.amcharts.com/lib/4/maps.js"></script>
+        <script src="https://www.amcharts.com/lib/4/charts.js"></script>
+        <script src="https://www.amcharts.com/lib/4/geodata/worldLow.js"></script>
+        <script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
+        <script
+              src="https://code.jquery.com/jquery-3.4.1.min.js"
+              integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+              crossorigin="anonymous"></script>
+    </head>
+
+    <body>
+        <div id="chartdiv" style="height: 760px;"></div>
+        <h4 id="alert-info" class="noInfo" style="text-align: center"></h4>
+    </body>
+
+
+<script>
+    am4core.ready(function() {
+        var colorEntities = {"originalText":"#db5c00","work":"#ffa600","primarySource":"#ce3b4f"};
+
+        var timeData = [
+        {"i":"i","year":"1300","NprimSources":0,"Nworks":0},{"i":"i","year":"1301","NprimSources":0,"Nworks":0},{"i":"i","year":"1302","NprimSources":0,"Nworks":0},
+        {"i":"i","year":"1303","NprimSources":0,"Nworks":0},{"i":"i","year":"1304","NprimSources":0,"Nworks":0},{"i":"i","year":"1305","NprimSources":0,"Nworks":0},
+        {"i":"i","year":"1306","NprimSources":0,"Nworks":0},{"i":"i","year":"1307","NprimSources":0,"Nworks":0},{"i":"i","year":"1308","NprimSources":0,"Nworks":0},
+        {"i":"i","year":"1309","NprimSources":0,"Nworks":0},{"i":"i","year":"1310","NprimSources":0,"Nworks":0},{"i":"i","year":"1311","NprimSources":0,"Nworks":0},
+        {"i":"i","year":"1312","NprimSources":0,"Nworks":0},{"i":"i","year":"1313","NprimSources":0,"Nworks":0},{"i":"i","year":"1314","NprimSources":0,"Nworks":0},
+        {"i":"i","year":"1315","NprimSources":0,"Nworks":0},{"i":"i","year":"1316","NprimSources":0,"Nworks":0},{"i":"i","year":"1317","NprimSources":0,"Nworks":0},
+        {"i":"i","year":"1318","NprimSources":0,"Nworks":0},{"i":"i","year":"1319","NprimSources":0,"Nworks":0},{"i":"i","year":"1320","NprimSources":0,"Nworks":0},
+        {"i":"i","year":"1321","NprimSources":0,"Nworks":0},{"i":"i","year":"1322","NprimSources":0,"Nworks":0},{"i":"i","year":"1323","NprimSources":0,"Nworks":0},
+        {"i":"i","year":"1324","NprimSources":0,"Nworks":0},{"i":"i","year":"1325","NprimSources":0,"Nworks":1},{"i":"i","year":"1326","NprimSources":0,"Nworks":0},
+        {"i":"i","year":"1327","NprimSources":0,"Nworks":1},{"i":"i","year":"1328","NprimSources":0,"Nworks":1},{"i":"i","year":"1329","NprimSources":0,"Nworks":1},
+        {"i":"i","year":"1330","NprimSources":1,"Nworks":1},{"i":"i","year":"1331","NprimSources":1,"Nworks":1},{"i":"i","year":"1332","NprimSources":1,"Nworks":2},
+        {"i":"i","year":"1333","NprimSources":1,"Nworks":1},{"i":"i","year":"1334","NprimSources":1,"Nworks":1},{"i":"i","year":"1335","NprimSources":1,"Nworks":1},
+        {"i":"i","year":"1336","NprimSources":1,"Nworks":0},{"i":"i","year":"1337","NprimSources":1,"Nworks":0},{"i":"i","year":"1338","NprimSources":1,"Nworks":0},
+        {"i":"i","year":"1339","NprimSources":1,"Nworks":0},{"i":"i","year":"1340","NprimSources":3,"Nworks":0},{"i":"i","year":"1341","NprimSources":2,"Nworks":0},
+        {"i":"i","year":"1342","NprimSources":2,"Nworks":0},{"i":"i","year":"1343","NprimSources":2,"Nworks":0},{"i":"i","year":"1344","NprimSources":2,"Nworks":0},
+        {"i":"i","year":"1345","NprimSources":2,"Nworks":0},{"i":"i","year":"1346","NprimSources":2,"Nworks":0},{"i":"i","year":"1347","NprimSources":2,"Nworks":0},
+        {"i":"i","year":"1348","NprimSources":2,"Nworks":0},{"i":"i","year":"1349","NprimSources":2,"Nworks":0},{"i":"i","year":"1350","NprimSources":2,"Nworks":0},
+        {"i":"i","year":"1351","NprimSources":0,"Nworks":0},{"i":"i","year":"1352","NprimSources":0,"Nworks":0},{"i":"i","year":"1353","NprimSources":0,"Nworks":0},
+        {"i":"i","year":"1354","NprimSources":0,"Nworks":0},{"i":"i","year":"1355","NprimSources":0,"Nworks":0},{"i":"i","year":"1356","NprimSources":0,"Nworks":0},
+        {"i":"i","year":"1357","NprimSources":0,"Nworks":0},{"i":"i","year":"1358","NprimSources":0,"Nworks":0},{"i":"i","year":"1359","NprimSources":0,"Nworks":0},
+        {"i":"i","year":"1360","NprimSources":0,"Nworks":0},{"i":"i","year":"1361","NprimSources":0,"Nworks":0},{"i":"i","year":"1362","NprimSources":0,"Nworks":0},
+        {"i":"i","year":"1363","NprimSources":0,"Nworks":0},{"i":"i","year":"1364","NprimSources":0,"Nworks":0},{"i":"i","year":"1365","NprimSources":0,"Nworks":0}];
+
+        var mapData = [
+        {
+            "lat":"48.85661400000001",
+            "long":"2.3522219000000177",
+            "place": "Paris, France",
+            "items":
+            [
+                {
+                    "entity": "work",
+                    "title": "[bold]Tabule Magne[/] 1325",
+                    "from": 1325,
+                    "to": 1325,
+                    "id": 6
+                },{
+                    "entity": "Primary source",
+                    "title": "[bold]Latin 10264[/] 1330–1340",
+                    "from": 1330,
+                    "to": 1340,
+                    "id": 6
+                }
+            ]
+        },{
+            "lat":"25.315092",
+            "long":"82.976054",
+            "place": "Varanasi, India",
+            "items":
+            [
+                {
+                    "entity": "work",
+                    "title": "[bold]Dinakara Sarani[/] 1332",
+                    "from": 1332,
+                    "to": 1332,
+                    "id": 1
+                }
+            ]
+        },{
+            "lat":"33.317919",
+            "long":"44.362081",
+            "place": "Bagdad, Irak",
+            "items":
+            [
+                {
+                    "entity": "work",
+                    "title": "[bold]الزيج الجامع[/] 1327–1335",
+                    "from": 1327,
+                    "to": 1335,
+                    "id": 1
+                },{
+                    "entity": "Primary source",
+                    "title": "[bold]Fatih 3418[/] 1340–1350",
+                    "from": 1340,
+                    "to": 1350,
+                    "id": 6
+                },{
+                    "entity": "Primary source",
+                    "title": "[bold]Süleymaniye Kütüphanesi[/] 1340–1350",
+                    "from": 1340,
+                    "to": 1350,
+                    "id": 6
+                }
+            ]
+        }
+        ];
+
+        if (mapData.length === 0){
+            $("#alert-info").append("There is no places associated with this item in the database");
+        }
+        am4core.useTheme(am4themes_animated);
+
+        // Create a container to contain all of the charts
+        var container = am4core.create("chartdiv", am4core.Container);
+        container.width = am4core.percent(100);
+        container.height = am4core.percent(100);
+
+        // Create map instance
+        var mapChart = container.createChild(am4maps.MapChart);
+        mapChart.y = -70;
+
+        /* BACKGROUND MAP */
+        // Set projection and quality definition of the map
+        mapChart.geodata = am4geodata_worldLow;
+        mapChart.projection = new am4maps.projections.Miller();
+        mapChart.deltaLongitude = -10; // move the map a little to the left
+
+        // Create map polygon series containing delineation of the countries
+        var polygonSeries = mapChart.series.push(new am4maps.MapPolygonSeries());
+        // Exclude Antartica
+        polygonSeries.exclude = ["AQ"];
+        // Load data (like country names and polygon shapes) from GeoJSON
+        polygonSeries.useGeodata = true;
+
+        // Configure appearance of the background map
+        var polygonTemplate = polygonSeries.mapPolygons.template;
+        polygonTemplate.strokeOpacity = 0.1;
+        polygonTemplate.nonScalingStroke = true;
+        polygonTemplate.tooltipText = "{name}"; // showing country names on hover
+        polygonTemplate.fill = am4core.color("#c8c8c8"); // color of the countries
+        // Create hover state and set alternative fill color
+        var hs = polygonTemplate.states.create("hover");
+        hs.properties.fill = am4core.color("#b4b4b4");
+
+        /* MAP POINTS */
+        // create a serie that can contains the data to draw markers on the map
+        var imageSeries = mapChart.series.push(new am4maps.MapImageSeries());
+
+        function getColor(place) {
+            var countW = 0;
+            var countPS = 0;
+            for (var i = place.items.length - 1; i >= 0; i--) {
+                    place.items[i].entity === "work" ? countW += 1 : countPS += 1;
+                }
+            if (countW === 0){
+                return colorEntities.primarySource;
+            } else if (countPS === 0){
+                return colorEntities.work;
+            } else {
+                return colorEntities.originalText;
+            }
+        }
+
+        var placeMarker = {};
+        var i = 0;
+        for (place of mapData){
+            placePoint = imageSeries.mapImages.create();
+            placePoint.latitude = parseFloat(place.lat);
+            placePoint.longitude = parseFloat(place.long);
+
+            // define marker appearance
+            placeMarker[i] = placePoint.createChild(am4core.Circle);
+            placeMarker[i].strokeOpacity = 0;
+            placeMarker[i].nonScaling = true; // the marker stays at the same size when zooming
+
+            var count = (mapData[i]["items"].length)*100;
+            placeMarker[i].radius = Math.log(count);
+
+            placeMarker[i].fill = am4core.color(getColor(place));
+            placeMarker[i].fillOpacity = 0.8;
+            i++;
+        }
+
+        // Zoom control
+        mapChart.zoomControl = new am4maps.ZoomControl();
+        mapChart.zoomControl.dy = -120;
+
+        // // Zoom on a country when clicked
+        // polygonTemplate.events.on("hit", function(ev) {
+        //     ev.target.series.mapChart.zoomToMapObject(ev.target);
+        // });
+
+        // Date conversion to enter a range from 0 to 1
+        var startBar = 1300;
+        var endBar = 1365;
+        var timeRange = endBar - startBar;
+        var yearRange = 1 / timeRange;
+
+        // Create a box to show the timeframe selected
+        var timeframe = mapChart.chartContainer.createChild(am4core.Container);
+        timeframe.width = 140;
+        timeframe.height = 35;
+        timeframe.verticalCenter = "middle";
+        timeframe.x = am4core.percent(45);
+        timeframe.y = 620;
+        timeframe.padding(10, 10, 10, 10);
+        timeframe.background.fill = am4core.color("#000");
+        timeframe.background.fillOpacity = 0.1;
+        var timeframeLabel = timeframe.createChild(am4core.Label);
+        timeframeLabel.align = "center";
+
+        /* HEATMAP CHART */
+        var timelineChart = mapChart.chartContainer.createChild(am4charts.XYChart)
+        timelineChart.height = 240;
+        timelineChart.y = 630;
+        timelineChart.x = -10;
+        timelineChart.data = timeData;
+
+        // Create axes
+        var xAxes = timelineChart.xAxes.push(new am4charts.CategoryAxis());
+        xAxes.dataFields.category = "year";
+        var yAxes = timelineChart.yAxes.push(new am4charts.CategoryAxis());
+        yAxes.dataFields.category = "i";
+
+        // Configuration of the background grid
+        xAxes.renderer.minGridDistance = 50; // tighten date labels
+        xAxes.renderer.grid.template.strokeOpacity = 0.1;
+        yAxes.renderer.grid.template.strokeOpacity = 0;
+        xAxes.renderer.labels.template.hidden = true;
+        yAxes.renderer.labels.template.hidden = true;
+
+        function seriesConfig(seriesValue, color) {
+            var series = timelineChart.series.push(new am4charts.ColumnSeries());
+            series.dataFields.value = seriesValue;
+            series.dataFields.categoryX = "year";
+            series.dataFields.categoryY = "i";
+            series.columns.template.fill = am4core.color(color);
+            series.columns.template.width = am4core.percent(100);
+            series.columns.template.strokeWidth = 0;
+
+            series.heatRules.push({
+                target: series.columns.template,
+                property: "fillOpacity",
+                min: 0,
+                max: 0.8
+            });
+            return series;
+        }
+
+        // Defining the serie for the primary sources
+        var seriesPS = seriesConfig("NprimSources", colorEntities["primarySource"]);
+
+        // Defining the serie for the works
+        var seriesW = seriesConfig("Nworks", colorEntities["work"]);
+
+        // Add scrollbar
+        var scrollbarX = new am4charts.XYChartScrollbar();
+        scrollbarX.series.push(seriesPS);
+        scrollbarX.series.push(seriesW);
+        timelineChart.scrollbarX = scrollbarX;
+
+        function generateTitleInRange(place, rangeMin, rangeMax) {
+            var placeName = place.place;
+            var titlesW = "";
+            var titlesPS = "";
+            for (var i = place.items.length - 1; i >= 0; i--) {
+                var valueMin = (place.items[i].from - startBar) * yearRange;
+                var valueMax = (place.items[i].to - startBar) * yearRange;
+                if ((valueMin >= rangeMin && valueMin <= rangeMax) ||
+                    (valueMax >= rangeMin && valueMax <= rangeMax) ||
+                    (rangeMin >= valueMin && rangeMax <= valueMax)){
+                    if (place.items[i].entity === "work"){
+                        titlesW = titlesW === "" ? "[font-size:18px]Work[/]\n" : titlesW;
+                        titlesW = titlesW.concat(place.items[i].title, "\n")
+                    } else {
+                        titlesPS = titlesPS === "" ? "[font-size:18px]Primary source[/]\n" : titlesPS;
+                        titlesPS = titlesPS.concat(place.items[i].title, "\n");
+                    }
+                }
+            }
+            return titlesW + titlesPS + placeName;
+        }
+
+        scrollbarX.events.on("rangechanged", function () {
+            var rangeMin = scrollbarX.range.start;
+            var rangeMax = scrollbarX.range.end;
+
+            // Conversion of the min and max range value into date
+            var dateMinRange = parseInt((rangeMin / yearRange) + startBar);
+            var dateMaxRange = parseInt((rangeMax / yearRange) + startBar);
+            // Show the timerange selected
+            scrollbarX.startGrip.tooltipText = `${dateMinRange}`;
+            scrollbarX.endGrip.tooltipText = `${dateMaxRange}`;
+            timeframeLabel.text = `${dateMinRange} — ${dateMaxRange}`;
+
+            i = 0;
+            var ids = [];
+            for (var place of mapData){
+                var opacity = 0;
+                var placeName = place.place;
+                var titlesW = "";
+                var titlesPS = "";
+                var countW = 0;
+                var countPS = 0;
+                var number = 0;
+
+                for (var j = place.items.length - 1; j >= 0; j--) {
+                    var valueMin = (place.items[j].from - startBar) * yearRange;
+                    var valueMax = (place.items[j].to - startBar) * yearRange;
+                    if ((valueMin >= rangeMin && valueMin <= rangeMax) ||
+                        (valueMax >= rangeMin && valueMax <= rangeMax) ||
+                        (rangeMin >= valueMin && rangeMax <= valueMax))
+                    {
+                        number++;
+                        opacity = 0.8;
+                        ids.push(place.items[j].id);
+                        if (place.items[j].entity === "work"){
+                            titlesW = titlesW === "" ? "[font-size:16px]Work[/]\n" : titlesW;
+                            titlesW = titlesW.concat(place.items[j].title, "\n");
+                            countW += 1;
+                        } else {
+                            titlesPS = titlesPS === "" ? "[font-size:16px]Primary source[/]\n" : titlesPS;
+                            titlesPS = titlesPS.concat(place.items[j].title, "\n");
+                            countPS += 1;
+                        }
+                    }
+                }
+
+                var tooltip = titlesW + titlesPS + placeName;
+                number = number !== 0 ? number*100 : 100;
+                if (countW === 0){
+                    var color = colorEntities.primarySource;
+                } else if (countPS === 0){
+                    color = colorEntities.work;
+                } else {
+                    color = colorEntities.originalText;
+                }
+
+                placeMarker[i].fillOpacity = opacity;
+                placeMarker[i].radius = Math.log(number);
+                placeMarker[i].fill = am4core.color(color);
+                placeMarker[i].tooltipText = tooltip;
+                i++;
+            }
+            console.log(ids);
+        });
+    });
+</script>
+    </html>

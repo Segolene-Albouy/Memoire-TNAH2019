@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+  <style>
+    #chartdiv {
+      width: 100%;
+      max-width: 100%;
+      height:550px;
+    }
+  </style>
+
+  <!-- Resources -->
+  <script src="https://www.amcharts.com/lib/4/core.js"></script>
+  <script src="https://www.amcharts.com/lib/4/charts.js"></script>
+  <script src="https://www.amcharts.com/lib/4/plugins/forceDirected.js"></script>
+  <script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
+
+</head>
+
+<body>
+  <div class="description-block" style="padding-right: 2em; height: 100%">
+    <h3 class="col-md-offset-1" style="padding-right: 1em; text-align: center">Database graph</h3>
+    <div id="chartdiv" style="height: 35em;"></div>
+  </div>
+</body>
+
+
+<!-- Chart code -->
+<script>
+
+  var colorEntities = {
+            "Edited text" : "#32bdd8",
+            "Original item" : "#db5c00",
+            "Work" : "#ffa600",
+            "Primary source" : "#d81a28",
+            "Table content" : "#5541db",
+            "Historical actor" : "#f7dd02",
+            "Place" : "#c99114",
+            "Library" : "#cb4889",
+            "Intellectual author" : "#37c665", //#01a07e X
+            "Secondary source" : "#52cea9",
+            "Journal" : "#01a07e", //#1a850b X
+            "Astronomical parameter" : "#ad1db7", //#84168c X
+        };
+
+var pictoEntities = {
+            "Edited text" : "<img src='Pictos/EditedText2.png' alt='Edited text pictogram' width='90em' height='90em'/><h6>Edited text</h6>",
+            "Original item" : "<img src='Pictos/OriginalItem2.png' alt='Original item pictogram' width='90em' height='90em'/><h6>Original item</h6>",
+            "Work" : "<img src='Pictos/work.png' alt='Work pictogram' width='90em' height='90em'/><h6>Work</h6>",
+            "Primary source" : "<img src='Pictos/primarysource2.png' alt='Primary source pictogram' width='90em' height='90em'/><h6>Primary source</h6>",
+            "Table content" : "<img src='Pictos/TableContent2.png' alt='Table content pictogram' width='90em' height='90em'/><h6>Table content</h6>",
+            "Historical actor" : "<img src='Pictos/historicalActor.png' alt='Historical actor pictogram' width='90em' height='90em'/><h6>Historical<br/>actor</h6>",
+            "Place" : "<img src='Pictos/place.png' alt='Place pictogram' width='90em' height='90em'/><h6>Place</h6>",
+            "Library" : "<img src='Pictos/library.png' alt='Library pictogram' width='90em' height='90em'/><h6>Library</h6>",
+            "Intellectual author" : "<img src='Pictos/intellectualAuthor.png' alt='Intellectual author pictogram' width='90em' height='90em'/><h6>Intellectual<br/>author</h6>",
+            "Secondary source" : "<img src='Pictos/secondarySource.png' alt='Secondary source pictogram' width='90em' height='90em'/><h6>Secondary source</h6>",
+            "Journal" : "<img src='Pictos/journal2.png' alt='Journal pictogram' width='90em' height='90em'/><h6>Journal</h6>",
+            "Astronomical parameter" : "<img src='Pictos/astronomicalParameter.png' alt='Astronomical parameter set pictogram' width='90em' height='90em'/><h6>Astronomical<br/>parameter</h6>",
+            "Mathematical parameter" : "<img src='Pictos/mathematicalParameter.png' alt='Mathematical parameter pictogram' width='90em' height='90em'/><h6>Mathematical<br/>parameter</h6>"
+        };
+
+var definitionEntities = {
+            "Edited text" : "Edited text definition",
+            "Original item" : "Original item definition",
+            "Work" : "Work definition",
+            "Primary source" : "Primary source definition",
+            "Table content" : "Table content definition",
+            "Historical actor" : "Historical actor definition",
+            "Place" : "Place definition",
+            "Library" : "Library definition",
+            "Intellectual author" : "Intellectual author definition",
+            "Secondary source" : "Secondary source definition",
+            "Journal" : "Journal definition",
+            "Astronomical parameter" : "Astronomical parameter definition",
+            "Mathematical parameter" : "Mathematical parameter definition"
+        };
+
+
+  am4core.ready(function() {
+
+// Themes begin
+am4core.useTheme(am4themes_animated);
+// Themes end
+
+
+
+var chart = am4core.create("chartdiv", am4plugins_forceDirected.ForceDirectedTree);
+chart.legend = new am4charts.Legend();
+
+var networkSeries = chart.series.push(new am4plugins_forceDirected.ForceDirectedSeries())
+
+networkSeries.data = [{
+  id : 1,
+  name: 'Original item',
+  value: 10,
+  picto: pictoEntities['Original item'],
+  color: colorEntities['Original item'],
+  def: definitionEntities['Original item'],
+  linkWith : [7, 3, 4],
+  children: [{
+    id : 2,
+    name: 'Work',
+    value: 7,
+    picto: pictoEntities['Work'],
+    color: colorEntities['Work'],
+    def: definitionEntities['Work'],
+    children: [{
+      id : 3,
+      name: 'Historical actor',
+      value: 5,
+      picto: pictoEntities['Historical actor'],
+      def: definitionEntities['Historical actor'],
+      linkWith : [4], //1, 
+      color: colorEntities['Historical actor']
+    }, {
+      id : 4,
+      name: 'Place',
+      value: 5,
+      picto: pictoEntities['Place'],
+      // linkWith : [1, 3],
+      color: colorEntities['Place'],
+      def: definitionEntities['Place']
+    }]
+  }, {
+    id : 5,
+    name: 'Primary source',
+    value: 7,
+    picto: pictoEntities['Primary source'],
+    color: colorEntities['Primary source'],
+    def: definitionEntities['Primary source'],
+    children: [{
+      id : 6,
+      name: 'Library',
+      value: 5,
+      picto: pictoEntities['Library'],
+      color: colorEntities['Library'],
+      def: definitionEntities['Library']
+    }]
+  }]
+}, {
+  id : 7,
+  name: 'Edited text',
+  value: 10,
+  picto: pictoEntities['Edited text'],
+  color: colorEntities['Edited text'],
+  def: definitionEntities['Edited text'],
+  // linkWith : [1],
+  children: [{
+    id : 8,
+    name: 'Table content',
+    value: 7,
+    picto: pictoEntities['Table content'],
+    color: colorEntities['Table content'],
+    def: definitionEntities['Table content'],
+    children: [{
+      id : 9,
+      name: 'Mathematical parameter',
+      value: 5,
+      picto: pictoEntities['Mathematical parameter'],
+      color: colorEntities['Mathematical parameter'],
+      def: definitionEntities['Mathematical parameter']
+    }, {
+      id : 10,
+      name: 'Astronomical parameter set',
+      value: 5,
+      picto: pictoEntities['Astronomical parameter'],
+      color: colorEntities['Astronomical parameter'],
+      def: definitionEntities['Astronomical parameter']
+    }]
+  }, {
+    id : 11,
+    name: 'Secondary source',
+    value: 7,
+    picto: pictoEntities['Secondary source'],
+    linkWith : [13],
+    color: colorEntities['Secondary source'],
+    def: definitionEntities['Secondary source'],
+    children: [{
+      id : 12,
+      name: 'Journal',
+      value: 5,
+      picto: pictoEntities['Journal'],
+      color: colorEntities['Journal'],
+      def: definitionEntities['Journal']
+    }]
+  }, {
+    id : 13,
+    name: 'Intellectual author',
+    value: 5,
+    picto: pictoEntities['Intellectual author'],
+    // linkWith : [11],
+    color: colorEntities['Intellectual author'],
+    def: definitionEntities['Intellectual author']
+    }]
+}];
+
+// fields name definition
+networkSeries.dataFields.linkWith = "linkWith";
+networkSeries.dataFields.name = "name";
+networkSeries.dataFields.id = "id";
+networkSeries.dataFields.value = "value";
+networkSeries.dataFields.children = "children";
+networkSeries.dataFields.color = "color";
+
+// tooltip and label definition
+networkSeries.nodes.template.tooltipText = "{def}";
+networkSeries.nodes.template.label.html = "{picto}";
+
+// Number of levels of nodes collapsed at the beginning
+networkSeries.maxLevels = 2;
+// Maximum size of a node
+networkSeries.maxRadius = 90;
+// Minimum size of a node
+networkSeries.minRadius = 40;
+
+// Size of the links
+networkSeries.links.template.distance = 1;
+// Link rigidity
+networkSeries.manyBodyStrength = -50;
+
+networkSeries.dataFields.collapsed = "off";
+
+
+
+// networkSeries.nodes.template.label.hideOversized = true;
+// networkSeries.nodes.template.label.truncate = true;
+// networkSeries.nodes.template.fillOpacity = 1;
+
+}); // end am4core.ready()
+
+</script>
+
+
+</html>

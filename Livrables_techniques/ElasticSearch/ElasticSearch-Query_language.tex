@@ -1,0 +1,487 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{inputenc}
+\usepackage{fontspec}
+\usepackage{lmodern}
+\usepackage[english]{babel}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{soul} % pour surligner le texte
+\usepackage{tikz} % pour la définition de couleur
+
+% MISE EN FORME DES BLOCS DE CODE
+\usepackage{listings} % pour les blocs de code
+
+\definecolor{whitegray}{gray}{0.97}
+\definecolor{pearlgray}{gray}{0.94}
+\definecolor{lightgray}{gray}{0.90}
+\definecolor{darkgray}{gray}{0.50}
+\definecolor{green}{rgb}{0.22, 0.73, 0.56}
+\definecolor{red}{rgb}{0.8, 0.25, 0.33}
+\definecolor{blue}{rgb}{0.36, 0.62, 0.92}
+\definecolor{bluegray}{rgb}{0.33, 0.41, 0.47}
+
+% Pour que le texte en police console soit surligné en gris clair
+\let\OldTexttt\texttt
+\sethlcolor{pearlgray}
+\renewcommand{\texttt}[1]{\OldTexttt{\hl{#1}}}
+
+% Pour la colorisation des nombres dans le code seulement quand il ne font pas partie de chaine de caractères ou commentaire
+\newcommand\digitstyle{\color{blue}}
+\makeatletter
+\newcommand{\ProcessDigit}[1]
+{%
+	\ifnum\lst@mode=\lst@Pmode\relax%
+	{\digitstyle #1}%
+	\else
+	#1%
+	\fi
+}
+
+% Definition de l'apparence des blocs de code
+\lstset{
+	language=php, % définition du langage (php et javascript ont des syntaxes proches)
+	basicstyle=\scriptsize\ttfamily, % petite taille, police de console
+	stringstyle=\color{red}, % chaine de caractères
+	backgroundcolor=\color{whitegray}, % fond
+	commentstyle=\color{darkgray}\textit, % commentaires
+	numberstyle=\tiny\color{darkgray}, % numero de ligne
+	rulecolor=\color{lightgray}, % bordure
+	keywordstyle=\color{green}\textbf, % opérateurs logiques etc
+	literate=
+	{0}{{{\ProcessDigit{0}}}}1
+	{1}{{{\ProcessDigit{1}}}}1
+	{2}{{{\ProcessDigit{2}}}}1
+	{3}{{{\ProcessDigit{3}}}}1
+	{4}{{{\ProcessDigit{4}}}}1
+	{5}{{{\ProcessDigit{5}}}}1
+	{6}{{{\ProcessDigit{6}}}}1
+	{7}{{{\ProcessDigit{7}}}}1
+	{8}{{{\ProcessDigit{8}}}}1
+	{9}{{{\ProcessDigit{9}}}}1
+	{<=}{{\(\leq\)}}1,
+	morestring=[b]",
+	morestring=[b]',
+	morecomment=[l]//,
+	aboveskip=3mm,
+	belowskip=-2mm,
+	breakatwhitespace=false,
+	breaklines=true,
+	captionpos=b,
+	deletekeywords={...},
+	escapeinside={\%*}{*)},
+	extendedchars=true,
+	framexleftmargin=16pt,
+	framextopmargin=5pt,
+	framexbottommargin=5pt,
+	frame=tblr,
+	keepspaces=true,
+	morekeywords={*,...},
+	numbers=left,
+	numbersep=10pt,
+	showspaces=false,
+	showstringspaces=false,
+	showtabs=false,
+	stepnumber=1,
+	tabsize=4,
+	title=\lstname,
+}
+
+\begin{document}
+
+\section{ElasticSearch query language}\label{elasticsearch-query-language}
+
+ElasticSearch has its own query language, more documentation can be
+found \href{https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html}{here}
+
+\subsection{Anatomy of a query}\label{anatomy-of-a-query}
+
+In most cases, an ElasticSearch query is composed of :
+\begin{itemize}
+	\item a \textbf{header} defining~:
+	\begin{itemize}
+		\item which \textbf{\emph{method}} is to be used~: \texttt{GET}, \texttt{POST}, etc.
+		\item which \textbf{\emph{index}} (i.e.~which entity of the database written in snake\_case) is going to be queried. Not necessary if all indexes will be queried.
+		\item what \textbf{\emph{type}} of search is to be made (\texttt{\_search} most ofthe time)
+	\end{itemize}
+	\item a \textbf{body} defining (among other things)~:
+	\begin{itemize}
+		\item the \textbf{\emph{fields}} that are going to appear in the results (\texttt{\_source})
+		\item the \textbf{\emph{filters}} that are going to narrow the number of results matching those filters (\texttt{query})
+		\item different properties of the results (size of the results, index from which to begin, etc.)
+	\end{itemize}
+\end{itemize}
+
+\paragraph{Tips \& tricks}\label{tips-tricks}
+
+The body of a query needs to be a correctly formatted JSON string, even using single quotes instead of double is considered to be an error. The \texttt{dev tools} tab in Kibana interface offers help for automatic indentation and autocompletion features that can be very handy.
+
+\subsection{Get all records}\label{get-all-records}
+
+To get all the records of the entire database :
+
+\begin{lstlisting}
+GET _search
+\end{lstlisting}
+
+To retrieve all records from an index (primary source in this case) :
+
+\begin{lstlisting}
+GET primary_source/_search
+\end{lstlisting}
+
+Which is equivalent to :
+
+\begin{lstlisting}
+GET primary_source/_search
+{
+	"query": {
+		"match_all": {}
+	}
+}
+\end{lstlisting}
+
+\subsection{Simple \href{https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html}{matching query}}\label{simple-matching-query}
+
+\paragraph{Exact term match}\label{exact-term-match}
+
+\begin{quote}
+All the works that contain the string ``tabule'' in their title.
+\end{quote}
+
+Note that the case of the letters doesn't matter, it will match ``Tabule'' as well. In addition to that, in this configuration, a sub-string will not match the same as the entire string (``tabu'' will not match ``tabule'') ; the string is treated as a complete word.
+
+\begin{lstlisting}
+GET work/_search
+{
+    "query":{
+        "match": {
+            "title": "tabule"
+        }
+    }
+}
+\end{lstlisting}
+
+\begin{quote}
+All the original items that are associated with a primary source that is kept in the library that have \texttt{2} as id.
+\end{quote}
+
+\begin{lstlisting}
+GET original_text/_search
+{
+    "query": {
+        "match": {
+            "primary_source.library.id": "2"
+        }
+    }
+}
+\end{lstlisting}
+
+\paragraph{Multiple terms match}\label{multiple-terms-match}
+
+\begin{quote}
+All original items that have in their title either the word ``solis'', either the word ``lune''.
+\end{quote}
+
+In this configuration, each string separated by a space is treated individually and the operator used to connect them is \texttt{OR}. In other words, the more you put terms, the more you will match original items.
+
+\begin{lstlisting}
+GET original_text/_search
+{
+    "query":{
+        "match": {
+            "original_text_title": "solis lune"
+        }
+    }
+}
+\end{lstlisting}
+
+To get a response where each terms given are independently going to filter the result (same kind of behavior as a Google query), you need to specifies the operator to be \texttt{AND}.
+
+\begin{lstlisting}
+GET original_text/_search
+{
+    "query": {
+        "match": {
+            "original_text_title": {
+                "query": "lune solis",
+                "operator": "AND"
+            }
+        }
+    }
+}
+\end{lstlisting}
+
+\subsection{Adding some margin of error}\label{adding-some-margin-of-error}
+
+\paragraph{Fuzziness}\label{fuzziness}
+
+The fuzziness allows a certain amount of inaccuracy to be accepted.
+
+\begin{quote}
+All library that approximately have the string ``natonale'' in their name.
+\end{quote}
+
+\begin{lstlisting}
+{
+    "query": {
+        "match": {
+            "library_name": {
+                "query": "natonale",
+                "fuzziness": "auto"
+            }
+        }
+    }
+}
+\end{lstlisting}
+
+You can set the fuzziness to \texttt{1} or more but the \texttt{auto} settings allows a number of letters that do not match, proportional to the length of the term to be searched.
+
+\subsubsection{Full text search on an index}\label{full-text-search-on-an-index}
+
+To allow search on every field of an entity, the query has to be set to \texttt{multi\_match}.
+
+\begin{quote}
+All edited texts that have approximately the string ``lune'' in one of them fields.
+\end{quote}
+
+\begin{lstlisting}
+GET edited_text/_search
+{
+    "query": {
+        "multi_match": {
+            "query": "lune",
+            "fuzziness": "auto"
+        }
+    }
+}
+\end{lstlisting}
+
+As is, those kind of requests are deprecated because no fields are specified : ElasticSearch encourages to list the fields you want the query to be executed on. The \texttt{fields} allows to reduce noise in the results and to take less time.
+
+\begin{quote}
+All primary sources that match approximately the strings ``vatican'' and ``latin'' in the list of fields specified.
+\end{quote}
+
+\begin{lstlisting}
+GET primary_source/_search
+{
+    "query": {
+        "multi_match": {
+            "query": "vatican latin",
+            "fuzziness": "auto",
+            "operator": "and",
+            "fields": [
+                "shelfmark",
+                "digital_identifier",
+                "kibana_name",
+                "tpq.keywork",
+                "taq.keywork",
+                "prim_type",
+                "library.kibana_name",
+                "original_texts.kibana_name",
+                "original_texts.table_type.kibana_name",
+                "original_texts.place.kibana_name",
+                "original_texts.historical_actor.kibana_name",
+                "original_texts.script.script_name",
+                "original_texts.language.language_name"
+            ]
+        }
+    }
+}
+\end{lstlisting}
+
+Notice that on the fields \texttt{tpq} and \texttt{taq} that are typed as integer, a string query cannot be performed. In order to query those fields as well, you must add \texttt{.keyword} after the field name : it corresponds to the field but typed as a string.
+
+\paragraph{Wildcards}\label{wildcards}
+
+To find some more documentation for wildcard queries, click \href{https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-wildcard-query.html}{here}.
+
+\subsection{Defining the source}\label{defining-the-source}
+
+If you are not interested in all the metadata (i.e.~the content of the fields) associated with the entity you want to query, it is possible to set a list of fields that are going to appear in the response.
+
+\begin{quote}
+Only the shelfmark, and the library name of all primary sources that are a manuscript
+\end{quote}
+
+\begin{lstlisting}
+GET primary_source/_search
+{
+    "_source": [
+        "shelfmark",
+        "library.library_name"
+    ],
+    "query": {
+        "match": {
+            "prim_type": "ms"
+        }
+    }
+}
+\end{lstlisting}
+
+Note that if a record in the result do not have some information you asked for (let's say, the primary source isn't associated with a library, thus doesn't have a \texttt{library.libray\_name}), the result object will not have the key for this precise field. Instead of looking like that :
+
+\begin{lstlisting}
+"_source" : {
+    "library" : {
+        "library_name" : "Vatican Library"
+    },
+    "shelfmark" : "Vat. Pal. Lat. 1376"
+}
+\end{lstlisting}
+
+It will look like :
+
+\begin{lstlisting}
+"_source" : {
+    "shelfmark" : "Vat. Pal. Lat. 1376"
+}
+\end{lstlisting}
+
+\subsection{Special queries}\label{special-queries}
+
+\subsubsection{\href{https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-range-query.html}{Range queries}}\label{range-queries}
+
+Range queries can be made on fields that are numbers (even if the field is typed as a string but contains integer) in the Kibana interface, but does seem to only work on integer/float/date typed field when using ajax.
+
+\begin{quote}
+All the primary source that have an edition date between 1400 and 1500
+\end{quote}
+
+\begin{lstlisting}
+GET primary_source/_search
+{
+    "query": {
+        "range": {
+            "date": {
+                "gte": 1400, // greater than
+                "lte": 1500 // less than
+            }
+        }
+    }
+}
+\end{lstlisting}
+
+If you want to make a range query on a date typed field (fields that end with \texttt{\_date}, you can use some ElasticSearch \href{https://www.elastic.co/guide/en/elasticsearch/reference/current/common-options.html\#date-math}{tools for date math} (those as well, seems to cause problem when used with ajax) :
+
+\begin{quote}
+All original items that have been created between 1000 years before today and 25 years after 1500
+\end{quote}
+
+\begin{lstlisting}
+GET original_text/_search
+{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "range": {
+                        "tpq_date": {
+                            "gte":"now-1000y"
+                        }
+                    }
+                },
+                {
+                    "range": {
+                        "taq_date": {
+                            "lte": "1500-01-01||+25y"
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}
+\end{lstlisting}
+
+\subsubsection{\href{https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-geo-distance-query.html}{Geo-distance} queries}\label{geo-distance-queries}
+
+The fields named \texttt{location} holds information that is treated as geo point by ElasticSearch : \texttt{geo\_distance} queries can be executed on them.
+
+\begin{quote}
+All works that have been conceived around 100km from 48 of latitude and 2 of longitude. \textbf{NB} : in this syntax, \texttt{longitude} comes before \texttt{latitude}.
+\end{quote}
+
+\begin{lstlisting}
+GET work/_search
+{
+    "query": {
+        "geo_distance": {
+            "distance": "100km",
+            "place.location": [2,48]
+        }
+    }
+}
+\end{lstlisting}
+
+The same query can be formulated more explicitly with this syntax :
+
+\begin{lstlisting}
+GET work/_search
+{
+    "query": {
+        "geo_distance": {
+            "distance": "100km",
+            "place.location": {
+                "lat" : 48,
+                "lon" : 2
+            }
+        }
+    }
+}
+\end{lstlisting}
+
+\subsection{Combining multiple clauses}\label{combining-multiple-clauses}
+
+Every filter you want to combine to build a query can be add with this kind of structure :
+
+\begin{lstlisting}
+{
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    // filter 1
+                },
+                {
+                    // filter 2
+                }
+            ]
+        }
+    }
+}
+\end{lstlisting}
+
+\paragraph{Putting all together}\label{putting-all-together}
+
+\begin{quote}
+The shelfmarks of all early printed primary sources that contains an original item that were created near Paris (lat : 48, long : 2).
+\end{quote}
+
+\begin{lstlisting}
+GET original_text/_search
+{
+    "_source": [
+        "primary_source.shelfmark"
+    ],
+    "query": {
+        "bool": {
+            "must": [
+                {
+                    "geo_distance": {
+                        "distance": "100km",
+                        "place.location": [2,48]
+                    }
+                },
+                {
+                    "match": {
+                        "primary_source.prim_type": "ep"
+                    }
+                }
+            ]
+        }
+    }
+}
+\end{lstlisting}
+\end{document}

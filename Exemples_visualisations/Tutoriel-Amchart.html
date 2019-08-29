@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+        <style>
+            #chartdiv {
+              width: 100%;
+              height: 500px;
+            }
+        </style>
+
+        <script src="https://www.amcharts.com/lib/4/core.js"></script>
+        <script src="https://www.amcharts.com/lib/4/charts.js"></script>
+        <script src="https://www.amcharts.com/lib/4/themes/material.js"></script>
+    </head>
+
+    <body>
+        <div class="description-block" style="padding-right: 2em; height: 100%">
+            <div id="chartdiv"></div>
+        </div>
+    </body>
+    <script>
+        /* Instanciate chart */
+        var chart = am4core.create("chartdiv", am4charts.XYChart);
+
+        // Creating axes
+        var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+        var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+
+        /* Configuring axes */
+        // define a title for the value axis
+        valueAxis.title.text = "Number of folios";
+        // display the axis one the opposite side than the default one
+        categoryAxis.renderer.opposite = true;
+        // to set the background grid of the value axis to be transparent
+        valueAxis.renderer.grid.template.strokeOpacity = 0;
+        // set the font size of the label from the category axis to 20
+        categoryAxis.renderer.labels.template.fontSize = 20;
+
+        // Creating series
+        var series = chart.series.push(new am4charts.ColumnSeries());
+
+        /* Configuring series */
+        // setting width of the stroke
+        series.strokeWidth = 0;
+        // setting text appearing when hovering on columns
+        series.columns.template.tooltipText = "Number of folios in manuscript";
+
+        /* Additionnal components */
+        var rectangle = chart.chartContainer.createChild(am4core.Container);
+        var rectLabel = rectangle.createChild(am4core.Label);
+
+        var msData = [
+          {
+                "ms": "Latin 10264",
+                "folios": 3,
+                "color": "#fcba03",
+                "url": "https://archivesetmanuscrits.bnf.fr/ark:/12148/cc71999k"
+            },{
+                "ms": "Bav. Lat. 1374",
+                "folios": 14,
+                "color": "#fc3103",
+                "url": "https://digi.ub.uni-heidelberg.de/diglit/bav_pal_lat_1374"
+            },{
+                "ms": "Lat. F. 246",
+                "folios": 12,
+                "color": "#ff9408",
+                "url": "https://ptolemaeus.badw.de/ms/726"
+            },{
+                "ms": "Lat. 7197",
+                "folios": 5,
+                "color": "#ff6f08",
+                "url": "https://archivesetmanuscrits.bnf.fr/ark:/12148/cc66378g"
+            },{
+                "ms": "Lat. 7269",
+                "folios": 7,
+                "color": "#ff7708",
+                "url": "https://archivesetmanuscrits.bnf.fr/ark:/12148/cc66460h"
+            },{
+                "ms": "Lat. 7270",
+                "folios": 8,
+                "color": "#ffde08",
+                "url": "https://archivesetmanuscrits.bnf.fr/ark:/12148/cc66461r"
+            },{
+                "ms": "Lat. 7271",
+                "folios": 16,
+                "color": "#db7209",
+                "url": "https://archivesetmanuscrits.bnf.fr/ark:/12148/cc664620"
+            }
+        ];
+
+        chart.data = msData;
+
+        series.dataFields.categoryX = "ms";
+        series.dataFields.valueY = "folios";
+        categoryAxis.dataFields.category = "ms";
+
+        /* Configuring with dataFields */
+        // make column labels a link
+        categoryAxis.renderer.labels.template.propertyFields.url = "url";
+        // colour the columns
+        series.columns.template.propertyFields.fill = "color";
+
+        /* Using templates */
+        // Transparency of the columns
+        series.columns.template.fillOpacity = 0.5;
+        // Green labels
+        valueAxis.renderer.labels.template.events.on("hit", function(ev) {
+          valueAxis.renderer.labels.template.fill = "green";
+        });
+
+        // Changing background color of the tooltip
+        series.tooltip.getFillFromObject = false;
+        series.tooltip.background.fill = am4core.color("green");
+
+        // setting text appearing when hovering on columns
+        series.columns.template.tooltipText = "Numbers of [{color}]folios[/] in {ms} : \n {valueY}";
+
+        series.heatRules.push({
+            target: series.columns.template,
+            property: "width",
+            min: 80,
+            max: 160
+        });
+
+        /* Configuring rectangle + label */
+        rectangle.width = am4core.percent(50);
+        rectangle.height = 60;
+        rectangle.align = "center";
+        rectangle.padding(10, 10, 10, 10);
+        rectangle.background.fill = am4core.color("orange");
+        rectangle.background.fillOpacity = 0.8;
+        rectLabel.align = "center";
+        rectLabel.text = "[bold]Work diffusion[/] :\n the example of the [font-style: italic]Tabule Magne[/]";
+        // Defining an HTML tooltip
+        rectangle.tooltipHTML = '<span style="font-variant: small-caps;">Regarding folio quantity in manuscript</span>';
+
+        /* Defining an hover state */
+        var hoverState = series.columns.template.states.create("hover");
+        hoverState.properties.fillOpacity = 0.9;
+
+        /* Configuring cursor */
+        chart.cursor = new am4charts.XYCursor();
+        chart.cursor.behavior = "selectX";
+        chart.cursor.events.on("selectended", function(ev) {
+            var range = ev.target.xRange;
+            var axis = ev.target.chart.xAxes.getIndex(0);
+            var from = axis.getPositionLabel(axis.toAxisPosition(range.start));
+            var to = axis.getPositionLabel(axis.toAxisPosition(range.end));
+            alert("Selected from " + from + " to " + to);
+        });
+
+        /* Defining a scrollbar */
+        var scrollbarX = new am4charts.XYChartScrollbar();
+        scrollbarX.series.push(series);
+        chart.scrollbarX = scrollbarX;
+    </script>
+</html>
