@@ -126,7 +126,7 @@ Il expose les étapes de conception d'une plateforme publique pour le projet de 
 #### 9.2 Implémentation d’ElasticSearch
 *9.2.1 Présentation d’ElasticSearch*
 
-*9.2.2 Utilisation dans le *front office
+*9.2.2 Utilisation dans le* front office
 ### 10 De la conception à l’implémentation
 #### 10.1 Technologies de visualisation de données
 *10.1.1 Choix du moyen de réalisation*
