@@ -76,7 +76,7 @@ Il expose les étapes de conception d'une plateforme publique pour le projet de 
 #### 5.1 Garantir l’ouverture à des publics non-spécialistes
 *5.1.1 Organisation de l’information comme vecteur de compréhension*
 
-*5.1.2 Nécessité du contenu éditorialisé**
+*5.1.2 Nécessité du contenu éditorialisé*
 
 #### 5.2 Attractivité des contenus
 *5.2.1 Cohérence des interfaces*
