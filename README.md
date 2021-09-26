@@ -54,16 +54,17 @@ Il expose les étapes de conception d'une plateforme publique pour le projet de 
 ## II Modalités d’exposition de la donnée
 ### 4 Analyse des besoins
 #### 4.1 Définition des publics
-*4.1.1 Chercheurs*
-
-*4.1.2 Non-spécialistes*
-
-*4.1.3 Ingénieurs numériques*
+```
+   4.1.1 Chercheurs
+   4.1.2 Non-spécialistes
+   4.1.3 Ingénieurs numériques
+```
 
 #### 4.2 Enjeux liés à la donnée
-*4.2.1 Contraintes qualitatives*
-
-*4.2.2 Spécificités des données* de DISHAS*
+```
+   4.2.1 Contraintes qualitatives
+   4.2.2 Spécificités des données de DISHAS
+```
 
 #### 4.3 Constitution d’une interface publique
 *4.3.1 Objectifs d’une interface publique*
